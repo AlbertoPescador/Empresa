@@ -6,21 +6,30 @@
         private int $telefono;
         private string $nombre;
         private string $apellidos;
-        private $misProductos = miArray();
+        private $misProductos;
+
+        // Constructor
+        public function __construct(string $codigo, $password, $telefono, $nombre, $apellidos)
+        {
+            $this->codigo = $codigo;
+            $this->password = $password;
+            $this->telefono = $telefono;
+            $this->nombre = $nombre;
+            $this->apellidos = $apellidos;
+            $this->misProductos = [];
+        }        
 
         //  Propiedades
         //  Atributo -> codigo
         //  Get
-        public function getCodigo()
+        public function getCodigo():string
         {
             return $this->codigo;
         }
         //  Set
-        public function setCodigo($codigo)
+        public function setCodigo(string $codigo)
         {
             $this->codigo = $codigo;
-
-            return $this;
         }
 
         //  Atributo -> password

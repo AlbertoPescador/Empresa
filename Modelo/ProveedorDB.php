@@ -7,17 +7,6 @@ class ProveedorDB {
         include_once "../Conexion/conexion.php";
         $conexion = Conexion::obtenerConexion();
 
-        // Verificar si el proveedor ya existe antes de insertar
-        if (self::getProveedor($proveedor->getCodigo())) {
-            // Proveedor ya existe
-            return false;
-        }
-
-        // Verificar que no haya campos en blanco
-        if (empty($proveedor->getCodigo()) || empty($proveedor->getPassword())) {
-            return false;
-        }
-
         // Hashear la contraseña antes de almacenarla
         $hashedPassword = password_hash($proveedor->getPassword(), PASSWORD_DEFAULT);
 
@@ -38,33 +27,64 @@ class ProveedorDB {
 
         return $result; // Devolver el resultado de la ejecución
     }
-}
 
-    private static function getProveedor(string $codigo): Proveedor {
+    public static function getProveedor(string $codigo): Proveedor {
         // Establecemos conexión con la BBDD
         include_once "../Conexion/conexion.php";
         $conexion = Conexion::obtenerConexion();
-
+    
         // Preparamos la consulta SQL
         $sql = "SELECT * FROM proveedor WHERE codigo = :codigo";
+    
+        $sentencia = $conexion->prepare($sql);      
+        $sentencia->execute(['codigo' => $codigo]);
+    
+        // Verificar si hay resultados antes de intentar crear una instancia de Proveedor
+        $row = $sentencia->fetch();
 
-        $sentencia = $conexion->prepare($sql);
-        $sentencia->bindValue(":codigo", $codigo);
-        $sentencia->setFetchMode(PDO::FETCH_CLASS, "Proveedor");
+        // Crear una instancia de Proveedor con los datos obtenidos de la base de datos
+        $proveedores = new Proveedor($row['codigo'], $row['password'], $row['telefono'], $row['nombre'], $row['apellidos']);
+
+        return $proveedores;
+    }
+    
+
+    public static function getCompleto(string $codigo): Proveedor{
+        $obtenerProductos = [];
+
+        $obtenerProveedor = self::getProveedor($codigo);
+        $obtenerProductos = ProductosDB::getProductos($obtenerProveedor);
+        $obtenerProveedor->setMisProductos($obtenerProductos);
+
+        return $obtenerProveedor;
+    }
+
+    public static function update(Proveedor $proveedor) {
+        $result = false;
+
+        // Establecemos conexión con la BBDD
+        include_once "../Conexion/conexion.php";
+        $conexion = Conexion::obtenerConexion();
         
-        $sentencia->execute();
+        // Preparamos la consulta SQL
+        $sql = "UPDATE proveedor
+                SET password = :password, telefono = :telefono, nombre = :nombre, apellidos = :apellidos
+                WHERE codigo = :codigo";
 
-        return $sentencia->fetch();
-    }
+        $hashedPassword = password_hash($proveedor->getPassword(), PASSWORD_DEFAULT);
+        
+        $sentencia = $conexion->prepare($sql);
 
-    private static function getCompleto(string $codigo){
-        $proveedor = 
-    }
+        $sentencia->bindValue(":codigo", $producto->getCodigo());
+        $sentencia->bindValue(":password", $hashedPassword);
+        $sentencia->bindValue(":telefono", $proveedor->getTelefono());
+        $sentencia->bindValue(":nombre", $proveedor->getNombre());
+        $sentencia->bindValue(":apellidos", $proveedor->getApellidos());
 
-    private static function update (Proveedor $proveedor) {
-        return $false;
+        // Ejecutamos la actualización
+        $result = $sentencia->execute();
 
-
+        return $result;
     }
 }
 ?>

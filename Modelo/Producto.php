@@ -7,6 +7,14 @@
         private int $stock;
         private Proveedor $miProveedor;
 
+        // Constructor
+        public function __construct(int $codigo, string $descripcion, float $precio, int $stock) {
+                $this->codigo = $codigo;
+                $this->descripcion = $descripcion;
+                $this->precio = $precio;
+                $this->stock = $stock;
+        }
+
         //  Propiedades
         //  Atributo -> codigo
         //  Get
@@ -60,6 +68,20 @@
         public function setStock($stock)
         {
                 $this->stock = $stock;
+
+                return $this;
+        }
+
+        //  Atributo -> miProveedor
+        //  Get
+        public function getMiProveedor()
+        {
+                return $this->miProveedor;
+        }
+        //  Set
+        public function setMiProveedor($miProveedor)
+        {
+                $this->miProveedor = $miProveedor;
 
                 return $this;
         }
