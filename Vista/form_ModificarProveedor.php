@@ -19,6 +19,11 @@
         }
 
         $codigo_proveedor = $_SESSION['codigo'];
+
+        include_once "../Modelo/ProveedorDB.php";
+        
+        // Obtener los datos actuales del proveedor directamente
+        $proveedor = ProveedorDB::getProveedor($codigo_proveedor);
         ?>
         <p>Sesión iniciada como: <?php echo $codigo_proveedor; ?></p>
     </header>
@@ -37,22 +42,22 @@
     <h2>Modificar Proveedor</h2>
 
     <form action="../Controlador/controla_ModificarProveedor.php" method="post">
-        <label form="codigo">Código:</label>
-        <input type="text" id="codigo" name="codigo" disabled><br>
+        <input type="hidden" name="codigo" value="<?php echo $proveedor->getCodigo(); ?>">
         
         <label for="password">Contraseña:</label>
-        <input type="password" name="password" required>
-    
+        <input type="password" name="password" value="<?php echo $proveedor->getPassword(); ?>" required>
+
         <label for="telefono">Teléfono:</label>
-        <input type="number" name="telefono" required>
+        <input type="number" name="telefono" value="<?php echo $proveedor->getTelefono(); ?>" required>
 
         <label for="nombre">Nombre:</label>
-        <input type="text" name="nombre" required>
+        <input type="text" name="nombre" value="<?php echo $proveedor->getNombre(); ?>" required>
 
         <label for="apellidos">Apellidos:</label>
-        <input type="text" name="apellidos" required>   
+        <input type="text" name="apellidos" value="<?php echo $proveedor->getApellidos(); ?>" required>
 
         <input type="submit" value="Guardar Cambios">
     </form>
 </body>
 </html>
+

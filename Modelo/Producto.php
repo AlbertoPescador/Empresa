@@ -8,7 +8,7 @@
         private Proveedor $miProveedor;
 
         // Constructor
-        public function __construct(int $codigo, string $descripcion, float $precio, int $stock) {
+        public function __construct(string $codigo, string $descripcion, float $precio, int $stock) {
                 $this->codigo = $codigo;
                 $this->descripcion = $descripcion;
                 $this->precio = $precio;

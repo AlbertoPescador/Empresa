@@ -45,25 +45,28 @@
     <?php 
         if(isset($_POST['buscar'])){
             echo "<br><hr><br>";
+            include_once "../Modelo/ProveedorDB.php";
+            include_once "../Modelo/ProductoDB.php";
+
+            $codigo_producto = $_POST["codigomodif"];
+
+            $datosProducto = ProductoDB::getByCodigo($codigo_producto);
     ?>
-        <form action="../Controlador/controla_ModificarProveedor.php" method="post">
-            <label form="codigo">Código:</label>
-            <input type="text" id="codigo" name="codigo" value="<?php echo $datosProveedor['codigo']; ?>" disabled><br>
+        <form action="../Controlador/controla_ModificarProducto.php" method="post">
+            <input type="hidden" name="codigo" value="<?php echo $datosProducto->getCodigo(); ?>">
             
-            <label for="password">Contraseña:</label>
-            <input type="password" name="password" placeholder="********" required>
+            <label for="descripcion">Descripción:</label>
+            <input type="text" name="descripcion" value="<?php echo $datosProducto->getDescripcion(); ?>" required>
 
-            <label for="telefono">Teléfono:</label>
-            <input type="number" name="telefono" value="<?php echo $datosProveedor['telefono']; ?>" required>
+            <label for="precio">Precio:</label>
+            <input type="number" name="precio" value="<?php echo $datosProducto->getPrecio(); ?>" required>
 
-            <label for="nombre">Nombre:</label>
-            <input type="text" name="nombre" value="<?php echo $datosProveedor['nombre']; ?>" required>
+            <label for="stock">Stock:</label>
+            <input type="number" name="stock" value="<?php echo $datosProducto->getStock(); ?>" required>   
 
-            <label for="apellidos">Apellidos:</label>
-            <input type="text" name="apellidos" value="<?php echo $datosProveedor['apellidos']; ?>" required>   
+            <input type="submit" name="submit" value="Guardar Cambios">
 
-            <input type="submit" value="Guardar Cambios">
-    </form>
+        </form>
     <?php
         }
     ?>

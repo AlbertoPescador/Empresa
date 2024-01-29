@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $comprobacion = $autenticado->getPassword();
 
     if ($autenticado && password_verify($contrasena, $comprobacion)) {
-        $_SESSION['codigo'] = $codigoProv;
+        $_SESSION['codigo'] = $autenticado->getCodigo();
         // Inicio de sesión exitoso, redirigir a la página de inicio
         echo '<script>alert("Sesión iniciada correctamente. ¡Bienvenido!");</script>';
         echo '<script>window.location.href="../Vista/form_MostrarProductos.php";</script>';

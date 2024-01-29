@@ -41,11 +41,11 @@ class ProductoDB {
         $sentencia = $conexion->prepare($sql);
 
         $sentencia->setFetchMode(PDO::FETCH_ASSOC);
-        $sentecia->bindValue(":codigo_proveedor", $proveedor->getCodigo());
+        $sentencia->bindValue(":codigo_proveedor", $proveedor->getCodigo());
         $sentencia->execute();
 
         while ($productos = $sentencia->fetch()){
-            $producto = new Producto();
+            $producto = new Producto($productos['codigo'], $productos['descripcion'], $productos['precio'], $productos['stock']);;
             $listaProductos[] = $producto;
         }
 
@@ -72,7 +72,7 @@ class ProductoDB {
         $sentencia->execute();
 
         while ($productos = $sentencia->fetch()){
-            $producto = new Producto();
+            $producto = new Producto($productos['codigo'], $productos['descripcion'], $productos['precio'], $productos['stock']);;
             $listaProductos[] = $producto;
         }
 
@@ -80,7 +80,7 @@ class ProductoDB {
     }
 
     // Filtrar productos por stock
-    public static function getByStock(Proveedor $proveedor, $stock): array {
+    public static function getByStock(Proveedor $proveedor, int $stock): array {
         // Establecemos conexión con la BBDD
         include_once "../Conexion/conexion.php";
         $conexion = Conexion::obtenerConexion();
@@ -98,13 +98,9 @@ class ProductoDB {
         $sentencia->bindValue(":codigo_proveedor", $proveedor->getCodigo());
         $sentencia->execute();
     
-        while ($row = $sentencia->fetch()) {
+        while ($productos = $sentencia->fetch()) {
             // Crear un objeto Producto y establecer sus propiedades
-            $producto = new Producto();
-            $producto->setCodigo($row['codigo']);
-            $producto->setDescripcion($row['descripcion']);
-            $producto->setPrecio($row['precio']);
-            $producto->setStock($row['stock']);
+            $producto = new Producto($productos['codigo'], $productos['descripcion'], $productos['precio'], $productos['stock']);
     
             // Agregar el objeto Producto al array
             $listaProductos[] = $producto;
@@ -163,21 +159,24 @@ class ProductoDB {
     }
 
     // Obtener producto por código
-    public static function getByCodigo(string $codigo) {
-        // Lógica para obtener producto por código de la base de datos
+    public static function getByCodigo(string $codigo): Producto {
+        // Establecemos conexión con la BBDD
         include_once "../Conexion/conexion.php";
         $conexion = Conexion::obtenerConexion();
-
+    
         // Preparamos la consulta SQL
         $sql = "SELECT * FROM producto WHERE codigo = :codigo";
+    
+        $sentencia = $conexion->prepare($sql);      
+        $sentencia->execute(['codigo' => $codigo]);
+    
+        // Verificar si hay resultados antes de intentar crear una instancia de Proveedor
+        $row = $sentencia->fetch();
 
-        $sentencia = $conexion->prepare($sql);
-        $sentencia->bindValue(":codigo", $codigo);
-        $sentencia->setFetchMode(PDO::FETCH_CLASS, "Producto");
+        // Crear una instancia de Proveedor con los datos obtenidos de la base de datos
+        $productos = new Producto($row['codigo'], $row['descripcion'], $row['precio'], $row['stock']);
 
-        $sentencia->execute();
-
-        return $sentencia->fetch();
+        return $productos;
     }
 }
 ?>

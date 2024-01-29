@@ -12,6 +12,7 @@
         <h1>Menú CRUD: Gestión Empresa</h1>
         <?php
         session_start();
+        include_once "../Controlador/controla_MostrarProductos.php";
 
         if (!isset($_SESSION['codigo'])) {
             header("Location: ../Vista/form_Login.php");
@@ -33,8 +34,12 @@
         <a href="../Controlador/controla_Principal.php?ModificarProveedor" id="ModificarProveedor">Modificar Proveedor</a>
         <a href="../Controlador/controla_Principal.php?CerrarSesion" id="CerrarSesion">Cerrar Sesión</a>
     </nav>
-
+    
     <h2>Lista de productos</h2>
-
+    <form action="../Controlador/controla_MostrarProductos.php" method="post">
+        <?php 
+            mostrarProductos(); 
+        ?>
+    </form>
 </body>
 </html>

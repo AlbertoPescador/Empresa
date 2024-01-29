@@ -61,7 +61,7 @@ class ProveedorDB {
 
     public static function update(Proveedor $proveedor) {
         $result = false;
-
+    
         // Establecemos conexión con la BBDD
         include_once "../Conexion/conexion.php";
         $conexion = Conexion::obtenerConexion();
@@ -70,20 +70,20 @@ class ProveedorDB {
         $sql = "UPDATE proveedor
                 SET password = :password, telefono = :telefono, nombre = :nombre, apellidos = :apellidos
                 WHERE codigo = :codigo";
-
+    
         $hashedPassword = password_hash($proveedor->getPassword(), PASSWORD_DEFAULT);
         
         $sentencia = $conexion->prepare($sql);
-
-        $sentencia->bindValue(":codigo", $producto->getCodigo());
+    
+        $sentencia->bindValue(":codigo", $proveedor->getCodigo());
         $sentencia->bindValue(":password", $hashedPassword);
         $sentencia->bindValue(":telefono", $proveedor->getTelefono());
         $sentencia->bindValue(":nombre", $proveedor->getNombre());
         $sentencia->bindValue(":apellidos", $proveedor->getApellidos());
-
+    
         // Ejecutamos la actualización
         $result = $sentencia->execute();
-
+    
         return $result;
     }
 }
